@@ -15,6 +15,11 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
+
+console.log("API_USERNAME:", process.env.API_USERNAME);
+console.log("API_PASSWORD:", process.env.API_PASSWORD ? "Loaded" : "Not Loaded");
+
+
 // Load credentials from .env file
 const API_USERNAME = process.env.API_USERNAME;
 const API_PASSWORD = process.env.API_PASSWORD;
