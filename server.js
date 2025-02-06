@@ -3,12 +3,14 @@ const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
 
+console.error("API Request Failed:", error.response?.data || error.message);
+
 const app = express();
 const PORT = 3000;
 
 // Allow CORS for all origins
 app.use(cors({
-    origin: "*", // Change this to your frontend URL in production (e.g., "https://yourdomain.com")
+    origin: "https://cnamtb.netlify.app/", // Change this to your frontend URL in production (e.g., "https://yourdomain.com")
     methods: "GET",
     allowedHeaders: ["Authorization", "Content-Type"]
 }));
