@@ -7,11 +7,13 @@ const app = express();
 const PORT = 3000;
 
 // Allow CORS for all origins
-app.use(cors({
-    origin: "https://cnam-1.onrender.com", // Change this to your frontend URL in production (e.g., "https://yourdomain.com")
+const corsOptions = {
+    origin: ["https://cnamtb.netlify.app", "https://cnam-1.onrender.com"], // Allow both frontend and API
     methods: "GET",
     allowedHeaders: ["Authorization", "Content-Type"]
-}));
+};
+
+app.use(cors(corsOptions));
 
 // Load credentials from .env file
 const API_USERNAME = process.env.API_USERNAME;
