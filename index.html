@@ -83,7 +83,7 @@
                 return;
             }
 
-            let apiUrl = `http://localhost:3000/lookup?number=${phoneNumber}`;
+            let apiUrl = `https://cnam-dppg.onrender.com/lookup?number=${phoneNumber}`;
 
             fetch(apiUrl)
                 .then(response => response.json())
