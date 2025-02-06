@@ -19,6 +19,11 @@ app.use(cors(corsOptions));
 console.log("API_USERNAME:", process.env.API_USERNAME);
 console.log("API_PASSWORD:", process.env.API_PASSWORD ? "Loaded" : "Not Loaded");
 
+const authHeader = `Basic ${Buffer.from(`${API_USERNAME}:${API_PASSWORD}`).toString('base64')}`;
+
+const response = await axios.get(`${BASE_URL}${number}`, {
+    headers: { Authorization: authHeader }
+});
 
 // Load credentials from .env file
 const API_USERNAME = process.env.API_USERNAME;
