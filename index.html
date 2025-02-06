@@ -83,7 +83,7 @@
                 return;
             }
 
-            let apiUrl = `https://cnam-dppg.onrender.com/lookup?number=${phoneNumber}`;
+            let apiUrl = `https://cors-anywhere.herokuapp.com/https://cnam-dppg.onrender.com/lookup?number=${phoneNumber}`;
 
             fetch(apiUrl)
                 .then(response => response.json())
