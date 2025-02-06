@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caller ID Lookup</title>
+    <link rel="icon" type="image/png" href="https://www.telebroad.com/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-gray-300 via-gray-500 to-gray-700 flex flex-col items-center justify-center min-h-screen p-4">
+
+    <!-- Larger Logo -->
+    <img src="logo.png" alt="Company Logo" class="w-48 md:w-64 mb-6">
+
+    <div class="bg-white shadow-2xl rounded-xl p-6 max-w-sm w-full">
+        <h2 class="text-3xl font-bold text-gray-800 mb-4 text-center">📞 Caller ID Lookup</h2>
+
+        <label for="phoneNumber" class="block text-gray-600 text-sm mb-1">Enter Phone Number:</label>
+        <input type="tel" id="phoneNumber" placeholder="e.g. (718)-444-9911"
+               class="w-full p-3 border rounded-full shadow-md focus:ring-2 focus:ring-blue-400 outline-none mb-3 text-lg text-center">
+
+        <button onclick="lookupCallerID()"
+                class="w-full bg-blue-500 text-white font-bold py-3 rounded-full shadow-lg hover:bg-blue-600 transition">
+            🔍 Lookup
+        </button>
+
+        <p id="response" class="mt-4 text-center text-gray-700 text-lg font-medium"></p>
+
+        <button id="callButton" onclick="makeCall()"
+                class="w-full bg-green-500 text-white font-bold py-3 rounded-full shadow-lg mt-3 hidden hover:bg-green-600 transition">
+            📞 Click to Call
+        </button>
+    </div>
+
+    <!-- Copyright Footer -->
+    <footer class="mt-6 text-gray-200 text-sm">
+        © Telebroad 2025™. All Rights Reserved.
+    </footer>
+
+    <script>
+        function cleanPhoneNumber(phone) {
+            return phone.replace(/\D/g, ''); // Remove all non-digit characters
+        }
+
+        function formatPhoneNumber(value) {
+            let cleaned = cleanPhoneNumber(value);
+            let formattedNumber = '';
+
+            if (cleaned.length <= 10) {
+                // Standard US format (XXX)-XXX-XXXX
+                if (cleaned.length > 0) formattedNumber = '(' + cleaned.substring(0, 3);
+                if (cleaned.length > 3) formattedNumber += ')-' + cleaned.substring(3, 6);
+                if (cleaned.length > 6) formattedNumber += '-' + cleaned.substring(6, 10);
+            } else {
+                // International format: Extra digits before parentheses
+                let extraDigits = cleaned.substring(0, cleaned.length - 10);
+                let mainNumber = cleaned.substring(cleaned.length - 10);
+                formattedNumber = extraDigits + ' (' + mainNumber.substring(0, 3) + ')-' + mainNumber.substring(3, 6) + '-' + mainNumber.substring(6, 10);
+            }
+
+            return formattedNumber;
+        }
+
+        document.getElementById("phoneNumber").addEventListener("input", function (event) {
+            let input = event.target;
+            let formatted = formatPhoneNumber(input.value);
+            input.value = formatted;
+        });
+
+        document.getElementById("phoneNumber").addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                lookupCallerID();
+            }
+        });
+
+        function lookupCallerID() {
+            let phoneNumber = document.getElementById("phoneNumber").value.trim();
+            phoneNumber = cleanPhoneNumber(phoneNumber);
+
+            if (phoneNumber.length < 10) {
+                alert("⚠️ Please enter a valid phone number (at least 10 digits).");
+                return;
+            }
+
+            let apiUrl = `http://localhost:3000/lookup?number=${phoneNumber}`;
+
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    let callerName = data.result;
+                    let resultDiv = document.getElementById("response");
+                    let callButton = document.getElementById("callButton");
+
+                    if (callerName) {
+                        resultDiv.innerHTML = `✅ Caller ID: <strong>${callerName}</strong>`;
+                        resultDiv.classList.remove("hidden");
+                        callButton.classList.remove("hidden");
+                        callButton.setAttribute("data-phone", phoneNumber);
+                    } else {
+                        resultDiv.innerHTML = `<p class='text-red-500'>⚠️ Caller ID not found.</p>`;
+                        resultDiv.classList.remove("hidden");
+                        callButton.classList.add("hidden");
+                    }
+                })
+                .catch(error => {
+                    document.getElementById("response").innerHTML = `<p class='text-red-500'>❌ Error fetching caller name.</p>`;
+                    document.getElementById("response").classList.remove("hidden");
+                    console.error("Error:", error);
+                });
+        }
+
+        function makeCall() {
+            let phoneNumber = document.getElementById("callButton").getAttribute("data-phone");
+            if (phoneNumber) {
+                let formattedNumber = formatPhoneNumber(phoneNumber);
+                let confirmCall = confirm(`📞 Would you like to call ${formattedNumber}?`);
+                if (confirmCall) {
+                    window.location.href = `tel:${phoneNumber}`;
+                }
+            } else {
+                alert("⚠️ No phone number available to call.");
+            }
+        }
+    </script>
+
+</body>
+</html>
