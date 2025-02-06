@@ -30,6 +30,10 @@ const API_USERNAME = process.env.API_USERNAME;
 const API_PASSWORD = process.env.API_PASSWORD;
 const BASE_URL = "https://webserv.telebroad.com/api/teleconsole/rest/cnam?number=";
 
+
+console.log("Auth Header:", authHeader);
+
+
 // Secure Endpoint for Caller ID Lookup
 app.get('/lookup', async (req, res) => {
     const number = req.query.number;
