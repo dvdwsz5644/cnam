@@ -8,7 +8,7 @@ const PORT = 3000;
 
 // Allow CORS for all origins
 app.use(cors({
-    origin: "*", // Change this to your frontend URL in production (e.g., "https://yourdomain.com")
+    origin: "https://cnam-1.onrender.com", // Change this to your frontend URL in production (e.g., "https://yourdomain.com")
     methods: "GET",
     allowedHeaders: ["Authorization", "Content-Type"]
 }));
